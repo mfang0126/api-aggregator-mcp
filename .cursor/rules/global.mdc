@@ -1,0 +1,30 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- always what you are working on add the status to the status.md in order to match the plan. 
+- update the status.md if you need.
+- update the plan.md if you need.
+
+- Follow [PEP 8](https://peps.python.org/pep-0008/) for all Python code style and formatting.
+- Use 4 spaces per indentation. Do not use tabs.
+- Name variables, functions, and files with clear, descriptive, and snake_case names.
+- Classes must use PascalCase names.
+- Limit all lines to 79 characters.
+- Order imports: standard library first, then third-party, then local modules. Separate each group with a blank line.
+- Write docstrings for all public modules, classes, and functions. Include a brief description, parameters, and return values.
+- Add inline comments only for complex or non-obvious logic. Comments must be clear and concise.
+- Keep functions small and focused; a function should do one thing.
+- Use type hints for all function arguments and return types.
+- Prefer list comprehensions and generator expressions for simple data transformations.
+- Avoid code duplication (DRY principle). Refactor repeated logic into reusable functions or classes.
+- Use context managers (`with` statement) for file and resource management.
+- Handle errors explicitly with try-except blocks. Never silently ignore exceptions; log or raise them as appropriate.
+- Use logging, not print statements, for runtime diagnostics.
+- Store secrets (API keys, passwords) in environment variables, never in code.
+- Write unit tests for all critical logic using pytest or unittest. Strive for high test coverage.
+- Use virtual environments for dependency isolation. List all dependencies in requirements.txt or pyproject.toml.
+- Document any non-standard design decisions in README.md or docs/.
+- Use Git for version control. Write clear, descriptive commit messages.
+- Review all code via pull requests before merging to main branches.
