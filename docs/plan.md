@@ -1,7 +1,48 @@
 ```markdown
-# API Aggregator MCP Server
+# API Aggregator MCP Server (FastMCP Implementation)
 
-This project implements an **API Aggregator MCP Server**—a server that exposes a unified set of tools, each representing a different external API (such as weather, news, finance, or GitHub), through the Model Context Protocol (MCP). It is designed for integration with AI agents and LLMs, providing a consistent, secure, and extensible interface for accessing diverse data sources.
+This project implements an **API Aggregator MCP Server** using [FastMCP](https://github.com/jlowin/fastmcp)—a server that exposes a unified set of tools, each representing a different external API (such as weather, news, finance, or GitHub), through the Model Context Protocol (MCP). It is designed for integration with AI agents and LLMs, providing a consistent, secure, and extensible interface for accessing diverse data sources.
+
+**🚀 NEW: FastMCP Implementation** - This project has been migrated from a custom MCP implementation to use FastMCP, dramatically simplifying the codebase while maintaining all functionality.
+
+## FastMCP Implementation Approach
+
+### Why FastMCP?
+
+**FastMCP Benefits:**
+- **Simplified Development**: Decorator-based tools replace complex manual registration
+- **Type Safety**: Automatic schema generation from Python type hints  
+- **Protocol Compliance**: Built-in MCP protocol handling eliminates manual JSON-RPC code
+- **Better Error Handling**: Standardized error responses and validation
+- **Easier Testing**: Direct function testing without protocol complexity
+- **Future-Proof**: Active development and community support
+
+### FastMCP Tool Definition
+
+Tools are now defined using simple decorators:
+
+```python
+from fastmcp import FastMCP, Context
+
+mcp = FastMCP("API Aggregator")
+
+@mcp.tool
+async def get_weather(
+    city: str,
+    country: Optional[str] = None,
+    units: str = "metric",
+    ctx: Context = None,
+) -> str:
+    """Get current weather information for a specified city."""
+    # Implementation here
+    return formatted_weather_data
+```
+
+**Key Features:**
+- **Type Hints**: Automatic parameter validation and schema generation
+- **Context Access**: Optional MCP context for logging and client communication
+- **Clean Returns**: Simple string returns instead of complex JSON structures
+- **Built-in Validation**: Parameter checking handled by FastMCP
 
 ---
 
