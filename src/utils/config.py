@@ -1,7 +1,7 @@
 """Configuration management for the API Aggregator MCP Server."""
 
 import os
-from typing import Optional
+from typing import Optional, Literal
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
@@ -9,41 +9,67 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
     
-    # Server Configuration
-    host: str = Field(default="localhost", env="MCP_SERVER_HOST")
-    port: int = Field(default=8000, env="MCP_SERVER_PORT")
-    debug: bool = Field(default=False, env="MCP_SERVER_DEBUG")
+    # Server Configuration - using field names that match env vars
+    mcp_server_host: str = "localhost"
+    mcp_server_port: int = 8000
+    mcp_server_debug: bool = False
+    mcp_server_mode: Literal["api", "mcp", "both"] = "both"
     
     # API Keys
-    openweather_api_key: Optional[str] = Field(default=None, env="OPENWEATHER_API_KEY")
-    news_api_key: Optional[str] = Field(default=None, env="NEWS_API_KEY")
-    alpha_vantage_api_key: Optional[str] = Field(default=None, env="ALPHA_VANTAGE_API_KEY")
+    openweather_api_key: Optional[str] = None
+    news_api_key: Optional[str] = None
+    alpha_vantage_api_key: Optional[str] = None
     
     # Authentication
-    auth_enabled: bool = Field(default=False, env="MCP_AUTH_ENABLED")
-    api_key: Optional[str] = Field(default=None, env="MCP_API_KEY")
+    mcp_auth_enabled: bool = False
+    mcp_api_key: Optional[str] = None
     
     # Logging
-    log_level: str = Field(default="INFO", env="LOG_LEVEL")
+    log_level: str = "INFO"
     
-    class Config:
-        """Pydantic configuration."""
-        env_file = ".env"
-        case_sensitive = False
-        extra = "ignore"  # Ignore extra fields in .env file
+    # Provide access to settings with original names for backward compatibility
+    @property
+    def host(self) -> str:
+        return self.mcp_server_host
+    
+    @property
+    def port(self) -> int:
+        return self.mcp_server_port
+    
+    @property
+    def debug(self) -> bool:
+        return self.mcp_server_debug
+    
+    @property
+    def server_mode(self) -> Literal["api", "mcp", "both"]:
+        return self.mcp_server_mode
+    
+    @property
+    def auth_enabled(self) -> bool:
+        return self.mcp_auth_enabled
+    
+    @property
+    def api_key(self) -> Optional[str]:
+        return self.mcp_api_key
+    
+    model_config = dict(env_file=".env", case_sensitive=False, extra="ignore")
 
 
-# Global settings instance
-settings = Settings()
+# Global settings instance - will be created when get_settings() is first called
+_settings: Optional[Settings] = None
 
 
 def get_settings() -> Settings:
     """Get the current settings instance."""
-    return settings
+    global _settings
+    if _settings is None:
+        _settings = Settings()
+    return _settings
 
 
 def validate_api_keys() -> dict[str, bool]:
     """Validate which API keys are available."""
+    settings = get_settings()
     return {
         "weather": bool(settings.openweather_api_key),
         "news": bool(settings.news_api_key),
